@@ -7,3 +7,65 @@
  *
  * Copyright © 2020 Marina Caporuscio, Juliet Carpenter, Keegan Elliott, Milan Gupta. All rights reserved.
  */
+
+
+h1 {
+    font-size: 70px;
+    text-align: center;
+    vertical-align: center;
+    background-color: black;
+    color: white;
+    letter-spacing: 30px;
+    height: 100px;
+    font-family: 'Montserrat', sans-serif;
+}
+
+body {
+    background-color: #eee;
+    font-size: 30px;
+    font-family: 'Montserrat', sans-serif;
+}
+
+.teamDetails {
+  width: 700px;
+  float: left;
+  padding: 60px;
+  
+}
+
+form {
+  overflow: hidden;
+}
+
+input {
+  float: right;
+  clear: both;
+  border-top-style: hidden;
+  border-right-style: hidden;
+  border-left-style: hidden;
+  border-bottom-style: groove;
+  background-color: #eee;
+}
+
+.no-outline:focus {
+  outline: none;
+}
+
+.vl {
+  border-left: 4px solid black;
+  height: 520px;
+  position: absolute;
+  left: 50%;
+  margin-left: -3px;
+  top: 150px;
+}
+
+.playButton {
+    text-align: center;
+    font-size: 50px;
+}
+
+.button:hover {
+  background-color: black;
+  color: white;
+}

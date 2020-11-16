@@ -11,25 +11,82 @@ Copyright © 2020 Marina Caporuscio, Juliet Carpenter, Keegan Elliott, Milan Gup
 -->
 <!DOCTYPE html>
 <html>
+    
 <head>
-    <title>[Name of game]</title>
-    <link rel="icon" type="image/png" href="/img/clipart2893392.png"/> <!-- source: https://www.clipartmax.com/middle/m2H7H7H7d3b1N4i8_clinking-beer-mugs-icon-emoji-caneca-de-chopp/ -->
+    
+    <title>Toasted Peanuts</title>
+    <link rel="icon" type="image/png" href="img/clipart2893392.png"/> <!-- source: https://www.clipartmax.com/middle/m2H7H7H7d3b1N4i8_clinking-beer-mugs-icon-emoji-caneca-de-chopp/ -->
     <link rel="stylesheet" type="text/css" href="style.css"/>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@100;400&display=swap" rel="stylesheet">
+    
+    
 </head>
 <body>
-    <!-- TODO -->
-    <div id="app">
-        <h1>{{ message }}</h1>
+    
+    <h1> toasted peanuts </h1>
+    
+    <div id="mainScreen">
+        
+        <div class="teamDetails">
+            
+            Team 1
+            <br>
+            <br>
+            Name:
+            <input type="text" id="teamName" name="teamName">
+            <br>
+            <br>
+            <br>
+            Players:
+            <input type="text" id="player1" name="player1">
+            <br><input type="text" id="player2" name="player2">
+            <br><input type="text" id="player3" name="player3">
+            <br><input type="text" id="player4" name="player4">
+            <br><input type="text" id="player5" name="player5">
+        
+        </div>
+        
+        <div class="vl"></div>
+        
+        <div class="teamDetails">
+            
+            Team 2
+            <br>
+            <br>
+            Name:
+            <input type="text" id="teamName" name="teamName">
+            <br>
+            <br>
+            <br>
+            Players:
+            <input type="text" id="2player1" name="player1">
+            <br><input type="text" id="2player2" name="player2">
+            <br><input type="text" id="2player3" name="player3">
+            <br><input type="text" id="2player4" name="player4">
+            <br><input type="text" id="2player5" name="player5">
+        
+        </div>
+        
+        <div class="playButton">
+            <button class="button" type="button"> P L A Y </button>
+        </div>
+        
+        <div id="app">
+            <p>{{ message }}</p>
+        </div>
+        
+      
     </div>
-
-
     <!-- Install Vue -->
     <!-- development version, includes helpful console warnings -->
     <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
     <!-- production version, optimized for size and speed -->
     <!-- <script src="https://cdn.jsdelivr.net/npm/vue@2"></script> -->
-    <script src="/script/main.js"></script>
+    <script src="script/main.js"></script>
+    <link rel="stylesheet" type="text/css" href="css/style.css">
+    
 </body>
 </html>
