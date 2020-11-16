@@ -16,3 +16,22 @@ var app = new Vue({
         message: 'Hidey Ho, Neighbor'
     }
 })
+
+var team1 = new Vue({
+    el: '#team1',
+    data: {
+        name: '',
+        player1: '',
+        player2: '',
+        player3: '',
+        player4: '',
+        player5: ''
+    },
+    methods: {
+        playClicked(){
+
+        }
+    }
+})
+
+

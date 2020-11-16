@@ -30,22 +30,22 @@ Copyright © 2020 Marina Caporuscio, Juliet Carpenter, Keegan Elliott, Milan Gup
     
     <div id="mainScreen">
         
-        <div class="teamDetails">
+        <div id="team1" class="teamDetails">
             
             Team 1
             <br>
             <br>
             Name:
-            <input type="text" id="teamName" name="teamName">
+            <input type="text" v-model="name">
             <br>
             <br>
             <br>
             Players:
-            <input type="text" id="player1" name="player1">
-            <br><input type="text" id="player2" name="player2">
-            <br><input type="text" id="player3" name="player3">
-            <br><input type="text" id="player4" name="player4">
-            <br><input type="text" id="player5" name="player5">
+                <input type="text" v-model="player1">
+            <br><input type="text" v-model="player2">
+            <br><input type="text" v-model="player3">
+            <br><input type="text" v-model="player4">
+            <br><input type="text" v-model="player5">
         
         </div>
         
