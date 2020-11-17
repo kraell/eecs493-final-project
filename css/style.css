@@ -1,4 +1,4 @@
-/* 
+/*
  * University of Michigan
  * EECS 493, Fall 2020
  *
@@ -9,7 +9,7 @@
  */
 
 
-h1 {
+#gameTitle {
     font-size: 70px;
     text-align: center;
     vertical-align: center;
@@ -22,15 +22,19 @@ h1 {
 
 body {
     background-color: #eee;
-    font-size: 30px;
     font-family: 'Montserrat', sans-serif;
+    padding-bottom: 100px;
+}
+
+.introHeading {
+  font-size: 30px;
 }
 
 .teamDetails {
   width: 700px;
   float: left;
   padding: 60px;
-  
+
 }
 
 form {
@@ -47,7 +51,12 @@ input {
   background-color: #eee;
 }
 
-.no-outline:focus {
+.introInput {
+  width: 400px;
+  font-size: 20px;
+}
+
+input:focus {
   outline: none;
 }
 
@@ -68,4 +77,13 @@ input {
 .button:hover {
   background-color: black;
   color: white;
+}
+
+.introInputGroup {
+  display: flex;
+  justify-content: space-between;
+}
+
+.teamInputs {
+  height: 600px;
 }

@@ -10,28 +10,58 @@
 
 // TODO: Create components here above the Vue app
 
+
+
+Vue.component('team-input', {
+  props: ['team'],
+  data: function () {
+    return {
+      name: '',
+      players: [
+        {
+          id: 0,
+          name: '',
+        },
+        {
+          id: 1,
+          name: '',
+        },
+        {
+          id: 2,
+          name: '',
+        },
+        {
+          id: 3,
+          name: '',
+        },
+        {
+          id: 4,
+          name: '',
+        },
+      ],
+    }
+  },
+
+  template: `
+    <div :id="'team' + team" class="teamDetails">
+      <h2 class="teamName mb-5 introHeading">Team {{ team }}</h2>
+      <div class="introInputGroup mb-5">
+        <h2 class="teamNameTitle introHeading">Name:</h2>
+        <input type="text" v-model="name" class="introInput">
+      </div>
+      <div class="introInputGroup">
+        <h2 class="playersTitle introHeading">Players:</h2>
+        <div class="players">
+          <input type="text" v-for="(player, id) in players" v-model="player.name" class="introInput my-1">
+        </div>
+      </div>
+    </div>
+  `
+})
+
 var app = new Vue({
-    el: '#app',
+    el: '#toastedPeanuts',
     data: {
-        message: 'Hidey Ho, Neighbor'
+      
     }
 })
-
-var team1 = new Vue({
-    el: '#team1',
-    data: {
-        name: '',
-        player1: '',
-        player2: '',
-        player3: '',
-        player4: '',
-        player5: ''
-    },
-    methods: {
-        playClicked(){
-
-        }
-    }
-})
-
-
