@@ -17,6 +17,7 @@ Vue.component('team-input', {
   data: function () {
     return {
       name: '',
+      score: 0,
       players: [
         {
           id: 0,
@@ -65,3 +66,17 @@ var app = new Vue({
       
     }
 })
+
+
+
+
+
+
+// this doesnt work :/
+function startGame(){
+    document.getElementsByClassName("setup").style.zIndex = "100";
+    document.getElementsByClassName("gamescreen").style.zIndex = "500";
+
+    
+    
+}

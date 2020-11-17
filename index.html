@@ -28,19 +28,34 @@ Copyright © 2020 Marina Caporuscio, Juliet Carpenter, Keegan Elliott, Milan Gup
     <h1 id="gameTitle"> toasted peanuts </h1>
 
     <div id="toastedPeanuts">
+      
+      <div class="setup">
+    
+          <div class="teamInputs">
+            <team-input team="1"></team-input>
 
-      <div class="teamInputs">
-        <team-input team="1"></team-input>
+            <div class="vl"></div>
 
-        <div class="vl"></div>
+            <team-input team="2"></team-input>
+          </div>
 
-        <team-input team="2"></team-input>
+          <div class="playButton">
+            <button class="button" type="button" onclick="startGame()"> P L A Y </button>
+          </div>
+
       </div>
-
-      <div class="playButton">
-        <button class="button" type="button"> P L A Y </button>
+      
+      <div class="gamescreen">
+          
+          game in progress
+          
       </div>
-
+      
+      <div class="gameover">
+          
+          game over
+          
+      </div>
 
     </div>
     <!-- Install Vue -->
