@@ -92,7 +92,7 @@ input:focus {
   height: 600px;
 }
 
-.setup {
+#setup {
     position: fixed;
     top: 100px;
     width: 100%;
@@ -101,7 +101,7 @@ input:focus {
     z-index: 200;
 }
 
-.gamescreen {
+#gamescreen {
     position: fixed;
     top: 100px;
     left: 0;
@@ -111,7 +111,7 @@ input:focus {
     z-index: 100;
 }
 
-.gameover {
+#gameover {
     width: 100vh;
     height: 80vh;
     background-color: black;

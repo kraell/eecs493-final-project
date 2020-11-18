@@ -74,8 +74,8 @@ var app = new Vue({
 
 // this doesnt work :/
 function startGame(){
-    document.getElementsByClassName("setup").style.zIndex = "100";
-    document.getElementsByClassName("gamescreen").style.zIndex = "500";
+    document.getElementById("setup").style.zIndex = "100";
+    document.getElementById("gamescreen").style.zIndex = "500";
 
     
     
