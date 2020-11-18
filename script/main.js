@@ -46,9 +46,6 @@ Vue.component('team-input', {
   template: `
     <div :id="'team' + team" class="teamDetails">
       
-      <div class="idk">
-    
-      </div>
     
       <h2 class="teamName mb-5 introHeading">Team {{ team }}</h2>
       <div class="introInputGroup mb-5">
@@ -101,7 +98,6 @@ function startGame(){
     
     //document.getElementById("team1").style.display = "none";
     //document.getElementById("team2").style.display = "none";
-    document.getElementByClassName("idk").style.display = "none";
     
     
     
