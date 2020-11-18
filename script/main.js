@@ -39,7 +39,13 @@ Vue.component('team-input', {
       ],
     }
   },
-
+  methods: {
+    // Define the method that emits data to the parent as the first parameter to `$emit()`.
+    // This is referenced in the <template> call in the parent. The second parameter is the payload.
+    emitToParent (event) {
+      this.$emit('childToParent', this.players)
+    }
+  },
   template: `
     <div :id="'team' + teamnum">
         <div :id="'inputs' + teamnum" class="teamDetails">
@@ -51,7 +57,7 @@ Vue.component('team-input', {
           <div class="introInputGroup">
             <h2 class="playersTitle introHeading">Players:</h2>
             <div class="players">
-              <input type="text" v-for="(player, id) in players" v-model="player.name" class="introInput my-1">
+              <input type="text" v-for="(player, id) in players" v-model="player.name" v-on:keyup="emitToParent" class="introInput my-1">
             </div>
           </div>
         </div>
@@ -87,10 +93,9 @@ Vue.component('score-board', {
 
 // TODO
 Vue.component('battle-component', {
-  props: ['team1players', 'team2players'],
+  props: ['battlenum', 'team1players', 'team2players'],
   data: function () {
     return {
-      battlenum: 1,
       games: [
         {
           id: 0,
@@ -112,31 +117,37 @@ Vue.component('battle-component', {
     }
   },
   template: `
-    <div :id="'battle' + battlenum" class="battle" v-if="team1players" >
+    <div :id="'battle' + battlenum" class="battle">
         
         <h1> Battle {{ battlenum }} </h1>
+    
+        //TODO: Randomly pick players
         <h2> {{ team1players[0].name }} vs. {{ team2players[0].name }} </h2>
+        
+        //TODO: Randomly pick a game
         <h1> {{ games[0].message }} </h1>
         
     </div>
   `
 })
 
+
 // parent component !!
 var app = new Vue({
     el: '#toastedPeanuts',
     data: function () {
       return {
+        gameStarted: false,
         team1players: [],
         team2players: [],
       }
     },
     methods: {
         // Triggered when `childToParent` event is emitted by the child.
-        team1InputsDone (players) {
+        team1InputsSent (players) {
           this.team1players = players
         },
-        team2InputsDone (players) {
+        team2InputsSent (players) {
           this.team2players = players
         }
     },
@@ -144,16 +155,19 @@ var app = new Vue({
       <div class="gamescreen">
       
             <div class="teamInputs">
-              <team-input teamnum="1"></team-input>
+              <team-input teamnum="1" v-on:childToParent="team1InputsSent"></team-input>
 
               <div id="verticalline"></div>
 
-              <team-input teamnum="2"></team-input>
+              <team-input teamnum="2" v-on:childToParent="team2InputsSent"></team-input>
             </div>
 
             <div id="playbutton">
-              <button class="button" type="button" onclick="startGame()"> P L A Y </button>
+              <button class="button" type="button" onclick="startGame()" v-on:click="gameStarted = true"> P L A Y </button>
             </div>
+    
+
+            <battle-component v-if="gameStarted"  battlenum="1" :team1players="team1players" :team2players="team2players"></battle-component>
     
     
       </div>
