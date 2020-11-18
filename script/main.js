@@ -10,8 +10,6 @@
 
 // TODO: Create components here above the Vue app
 
-
-
 Vue.component('team-input', {
   props: ['teamnum'],
   data: function () {
@@ -87,14 +85,79 @@ Vue.component('score-board', {
   `
 })
 
+// TODO
+Vue.component('battle-component', {
+  props: ['team1players', 'team2players'],
+  data: function () {
+    return {
+      battlenum: 1,
+      games: [
+        {
+          id: 0,
+          message: 'ROCK PAPER SCISSORS',
+        },
+        {
+          id: 1,
+          message: 'THUMB WAR',
+        },
+        {
+          id: 2,
+          message: 'CONCENTRARION 64',
+        },
+        {
+          id: 3,
+          message: 'ARM WRESTLE',
+        },
+      ],
+    }
+  },
+  template: `
+    <div :id="'battle' + battlenum" class="battle" v-if="team1players" >
+        
+        <h1> Battle {{ battlenum }} </h1>
+        <h2> {{ team1players[0].name }} vs. {{ team2players[0].name }} </h2>
+        <h1> {{ games[0].message }} </h1>
+        
+    </div>
+  `
+})
 
-
-
+// parent component !!
 var app = new Vue({
     el: '#toastedPeanuts',
-    data: {
+    data: function () {
+      return {
+        team1players: [],
+        team2players: [],
+      }
+    },
+    methods: {
+        // Triggered when `childToParent` event is emitted by the child.
+        team1InputsDone (players) {
+          this.team1players = players
+        },
+        team2InputsDone (players) {
+          this.team2players = players
+        }
+    },
+    template: `
+      <div class="gamescreen">
       
-    }
+            <div class="teamInputs">
+              <team-input teamnum="1"></team-input>
+
+              <div id="verticalline"></div>
+
+              <team-input teamnum="2"></team-input>
+            </div>
+
+            <div id="playbutton">
+              <button class="button" type="button" onclick="startGame()"> P L A Y </button>
+            </div>
+    
+    
+      </div>
+    `
 })
 
 
@@ -107,7 +170,5 @@ function startGame(){
     
     document.getElementById("scoreboard1").style.display = "block";
     document.getElementById("scoreboard2").style.display = "block";
-    
-    
     
 }
