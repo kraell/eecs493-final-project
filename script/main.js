@@ -43,7 +43,7 @@ Vue.component('team-input', {
     // Define the method that emits data to the parent as the first parameter to `$emit()`.
     // This is referenced in the <template> call in the parent. The second parameter is the payload.
     emitPlayers (event) {
-      this.$emit('sendPlayers', this.players)
+      this.$emit('sendPlayers', this.players.filter(player => player.name !== ''))
     },
     emitName (event) {
       this.$emit('sendName', this.name)
@@ -73,7 +73,7 @@ Vue.component('score-board', {
   props: ['teamnum', 'name', 'players', 'score'],
   data: function () {
     return {
-        
+
     }
   },
 
@@ -108,35 +108,54 @@ Vue.component('battle-component', {
         },
         {
           id: 2,
-          message: 'CONCENTRARION 64',
+          message: 'CONCENTRATION 64',
         },
         {
           id: 3,
           message: 'ARM WRESTLE',
         },
       ],
+      currentPlayers: {
+        team1: '',
+        team2: ''
+      },
+      currentGame: ''
     }
   },
   template: `
     <div :id="'battle' + battlenum" class="battle">
-        
-        <h1> Battle {{ battlenum }} </h1>
-    
-        //TODO: Randomly pick players
-        <h2> {{ team1players[0].name }} vs. {{ team2players[0].name }} </h2>
-        
-        //TODO: Randomly pick a game
-        <h2> {{ games[0].message }} </h2>
-    
-        //TODO: add methods to trigger which team won
-        <br>
-        <br>
+
+        <h1 class="mb-4"> Battle {{ battlenum }} </h1>
+
+        <h2 class="mb-4"> {{ currentPlayers.team1 }} vs. {{ currentPlayers.team2 }} </h2>
+
+        <h2 class="mb-4"> {{ currentGame }} </h2>
+
+        // TODO: Add points to scoreboard when user clicks winner
         <p> Click the winning player! </p>
-        <button class="button" type="button"> {{ team1players[0].name }} </button>
-        <button class="button" type="button"> {{ team2players[0].name }} </button>
-    
+        <button class="button" type="button" v-on:click="updateBattle(1)"> {{ currentPlayers.team1 }} </button>
+        <button class="button" type="button" v-on:click="updateBattle(2)"> {{ currentPlayers.team2 }} </button>
+
     </div>
-  `
+  `,
+  methods: {
+    randomChoice: function (items) {
+      let index = Math.floor(Math.random() * items.length)
+      return items[index]
+    },
+
+    updateBattle: function(winningTeam) {
+      this.battlenum = parseInt(this.battlenum) + 1
+      this.currentPlayers.team1 = this.randomChoice(this.team1players).name
+      this.currentPlayers.team2 = this.randomChoice(this.team2players).name
+      this.currentGame = this.randomChoice(this.games).message
+    }
+  },
+  created: function () {
+    this.currentPlayers.team1 = this.randomChoice(this.team1players).name
+    this.currentPlayers.team2 = this.randomChoice(this.team2players).name
+    this.currentGame = this.randomChoice(this.games).message
+  }
 })
 
 
@@ -171,41 +190,28 @@ var app = new Vue({
         updateScore(name){
             //add points to the team that "name" is on
             // or have it send the corrent team? idk
-            
         }
     },
     template: `
       <div class="gamescreen">
-      
-            <div class="teamInputs">
+
+            <div class="teamInputs" v-show="!gameStarted">
               <team-input teamnum="1" v-on:sendPlayers="team1InputsSent" v-on:sendName="name1Sent"></team-input>
               <div id="verticalline"></div>
               <team-input teamnum="2" v-on:sendPlayers="team2InputsSent" v-on:sendName="name2Sent"></team-input>
             </div>
 
-            <div id="playbutton">
-              <button class="button" type="button" onclick="startGame()" v-on:click="gameStarted = true"> P L A Y </button>
+            <div id="playbutton" v-show="!gameStarted">
+              <button class="button" type="button" v-on:click="gameStarted = true"> P L A Y </button>
             </div>
-    
-            <score-board teamnum="1" :name="name1" :players="team1players" :score="score1"></score-board>
-            <score-board teamnum="2" :name="name2" :players="team2players" :score="score2"></score-board>
 
-            <battle-component v-if="gameStarted"  battlenum="1" :team1players="team1players" :team2players="team2players"></battle-component>
-    
-    
+            <div v-show="gameStarted">
+              <score-board teamnum="1" :name="name1" :players="team1players" :score="score1"></score-board>
+              <score-board teamnum="2" :name="name2" :players="team2players" :score="score2"></score-board>
+
+              <battle-component v-if="gameStarted"  battlenum="1" :team1players="team1players" :team2players="team2players"></battle-component>
+            </div>
+
       </div>
     `
 })
-
-
-
-function startGame(){
-    document.getElementById("inputs1").style.display = "none";
-    document.getElementById("inputs2").style.display = "none";
-    document.getElementById("verticalline").style.display = "none";
-    document.getElementById("playbutton").style.display = "none";
-    
-    document.getElementById("scoreboard1").style.display = "block";
-    document.getElementById("scoreboard2").style.display = "block";
-    
-}

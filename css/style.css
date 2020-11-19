@@ -32,7 +32,7 @@ body {
 
 p {
     font-size: 20px;
-    
+
 }
 
 .introHeading {
@@ -100,7 +100,6 @@ input:focus {
 
 .scoreboard {
     position: fixed;
-    display: none;
     top: 100px;
     width: 300px;
     border-style: solid;
@@ -153,4 +152,3 @@ input:focus {
     margin: auto;
     z-index: -100;
 }
-
