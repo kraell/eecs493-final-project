@@ -43,10 +43,10 @@ Vue.component('team-input', {
     // Define the method that emits data to the parent as the first parameter to `$emit()`.
     // This is referenced in the <template> call in the parent. The second parameter is the payload.
     emitPlayers (event) {
-      this.$emit('sendPlayers', this.players.filter(player => player.name !== ''))
+      this.$emit('sendPlayers', this.players.filter(player => player.name !== ''), this.teamnum)
     },
     emitName (event) {
-      this.$emit('sendName', this.name)
+      this.$emit('sendName', this.name, this.teamnum)
     },
   },
   template: `
@@ -70,10 +70,10 @@ Vue.component('team-input', {
 
 
 Vue.component('score-board', {
-  props: ['teamnum', 'name', 'players', 'score'],
+  props: ['teamnum', 'name', 'playerNames', 'score'],
   data: function () {
-    let playerNames = this.players;
-    let playerObjs = playerNames.map(player => {
+    console.log(this.playerNames)
+    let playerObjs = this.playerNames.map(player => {
       return {
         name: player,
         pointsScored: 0,
@@ -147,8 +147,8 @@ Vue.component('battle-component', {
         <h2 class="mb-4"> {{ currentGame }} </h2>
 
         <p> Click the winning player! </p>
-        <button class="button" type="button" v-on:click="updateBattle(1)" v-on:click.left="emitScore1"> {{ currentPlayers.team1 }} </button>
-        <button class="button" type="button" v-on:click="updateBattle(2)" v-on:click.left="emitScore2"> {{ currentPlayers.team2 }} </button>
+        <button class="button" type="button" v-on:click="updateBattle(1)" v-on:click.left="emitScore($event, 1)"> {{ currentPlayers.team1 }} </button>
+        <button class="button" type="button" v-on:click="updateBattle(2)" v-on:click.left="emitScore($event, 2)"> {{ currentPlayers.team2 }} </button>
 
     </div>
   `,
@@ -160,25 +160,22 @@ Vue.component('battle-component', {
 
     // Maybe divvy out different scores for different battles?
     // Can we consolidate these two functions?
-    emitScore1 (event) {
-        this.$emit('sendScore1', this.currentGame)
-    },
-    emitScore2 (event) {
-        this.$emit('sendScore2', this.currentGame)
+    emitScore (event, team) {
+        this.$emit('sendScore', this.currentGame, team)
     },
 
     updateBattle: function(winningTeam) {
       this.battlenum = this.battlenum + 1
-      this.currentPlayers.team1 = this.randomChoice(this.team1players).name
-      this.currentPlayers.team2 = this.randomChoice(this.team2players).name
+      this.currentPlayers.team1 = this.randomChoice(this.team1players)
+      this.currentPlayers.team2 = this.randomChoice(this.team2players)
       this.currentGame = this.randomChoice(this.games).message
     }
   },
   // Note: this function is not currently used.
   // Re: Called by Vue when the component is created
   created: function () {
-    this.currentPlayers.team1 = this.randomChoice(this.team1players).name
-    this.currentPlayers.team2 = this.randomChoice(this.team2players).name
+    this.currentPlayers.team1 = this.randomChoice(this.team1players)
+    this.currentPlayers.team2 = this.randomChoice(this.team2players)
     this.currentGame = this.randomChoice(this.games).message
   }
 })
@@ -190,61 +187,55 @@ var app = new Vue({
     data: function () {
       return {
         gameStarted: false,
-        name1: '',
-        name2: '',
-        team1players: [],
-        team2players: [],
-        score1: 0,
-        score2: 0,
+        names: {
+          1: '',
+          2: ''
+        },
+        players: {
+          1: [],
+          2: []
+        },
+        scores: {
+          1: 0,
+          2: 0
+        }
       }
     },
     methods: {
         // Triggered when events are emitted by the children.
-        name1Sent (name) {
+        nameSent (name, team) {
           console.log(name)
-          this.name1 = name
+          this.names[team] = name
         },
-        name2Sent (name) {
-          console.log(name)
-          this.name2 = name
+        teamInputsSent (playerNames, team) {
+          this.players[team] = playerNames.map(player => player.name)
         },
-        team1InputsSent (players) {
-          this.team1players = players
-        },
-        team2InputsSent (players) {
-          this.team2players = players
-        },
-        updateScore1 (currentGame) {
-            // Depending on what game was just played, give team1 <X> amount of points.
+
+        updateScore (currentGame, team) {
+            // Depending on what game was just played, give team <X> amount of points.
             console.log(currentGame);
-            this.score1 += 10;
-            console.log(this.score1);
+            this.scores[team] += 10;
         },
-        updateScore2 (currentGame) {
-            // Depending on what game was just played, give team2 <X> amount of points.
-            console.log(currentGame);
-            this.score2 += 10;
-            console.log(this.score2);
-        }
+
     },
     template: `
       <div class="gamescreen">
 
             <div class="teamInputs" v-show="!gameStarted">
-              <team-input teamnum="1" v-on:sendPlayers="team1InputsSent" v-on:sendName="name1Sent"></team-input>
+              <team-input teamnum="1" v-on:sendPlayers="teamInputsSent" v-on:sendName="nameSent"></team-input>
               <div id="verticalline"></div>
-              <team-input teamnum="2" v-on:sendPlayers="team2InputsSent" v-on:sendName="name2Sent"></team-input>
+              <team-input teamnum="2" v-on:sendPlayers="teamInputsSent" v-on:sendName="nameSent"></team-input>
             </div>
 
             <div id="playbutton" v-show="!gameStarted">
               <button class="button" type="button" v-on:click="gameStarted = true"> P L A Y </button>
             </div>
 
-            <div v-show="gameStarted">
-              <score-board teamnum="1" :name="name1" :players="team1players" :score="score1"></score-board>
-              <score-board teamnum="2" :name="name2" :players="team2players" :score="score2"></score-board>
+            <div v-if="gameStarted">
+              <score-board teamnum="1" :name="names[1]" :playerNames="players[1]" :score="scores[1]"></score-board>
+              <score-board teamnum="2" :name="names[2]" :playerNames="players[2]" :score="scores[2]"></score-board>
 
-              <battle-component v-if="gameStarted" :team1players="team1players" :team2players="team2players" v-on:sendScore1="updateScore1" v-on:sendScore2="updateScore2"></battle-component>
+              <battle-component v-if="gameStarted" :team1players="players[1]" :team2players="players[2]" v-on:sendScore="updateScore"></battle-component>
             </div>
 
       </div>
