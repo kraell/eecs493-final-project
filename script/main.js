@@ -72,8 +72,16 @@ Vue.component('team-input', {
 Vue.component('score-board', {
   props: ['teamnum', 'name', 'players', 'score'],
   data: function () {
+    let playerNames = this.players;
+    let playerObjs = playerNames.map(player => {
+      return {
+        name: player,
+        pointsScored: 0,
+        totalStandardDrinks: 0,
+      }
+    })
     return {
-
+      players: playerObjs
     }
   },
 
@@ -81,11 +89,9 @@ Vue.component('score-board', {
     <div :id="'scoreboard' + teamnum" class="scoreboard" v-if="name" >
       <h2 class="teamName mb-5 introHeading">Team {{ name }}</h2>
       <h2 class="teamName mb-5 introHeading">Score: {{ score }}</h2>
-      <div class="introInputGroup">
-        <h2 class="playersTitle introHeading">Players:</h2>
-        <br>
-        <div class="players">
-          <div v-for="(player, id) in players" > {{ player.name }} </div>
+      <div class="players">
+        <div v-for="(player, id) in players">
+          <h3><i><b>{{ player.name }}</b></i></h3>
         </div>
       </div>
     </div>
@@ -94,7 +100,7 @@ Vue.component('score-board', {
 
 // TODO
 Vue.component('battle-component', {
-  props: ['battlenum', 'team1players', 'team2players'],
+  props: ['team1players', 'team2players'],
   data: function () {
     return {
       games: [
@@ -114,12 +120,21 @@ Vue.component('battle-component', {
           id: 3,
           message: 'ARM WRESTLE',
         },
+        {
+          id: 4,
+          message: 'NINJA'
+        },
+        {
+          id: 5,
+          message: 'STARING CONTEST'
+        }
       ],
       currentPlayers: {
         team1: '',
         team2: ''
       },
-      currentGame: ''
+      currentGame: '',
+      battlenum: 1
     }
   },
   template: `
@@ -131,7 +146,6 @@ Vue.component('battle-component', {
 
         <h2 class="mb-4"> {{ currentGame }} </h2>
 
-        // TODO: Add points to scoreboard when user clicks winner
         <p> Click the winning player! </p>
         <button class="button" type="button" v-on:click="updateBattle(1)" v-on:click.left="emitScore1"> {{ currentPlayers.team1 }} </button>
         <button class="button" type="button" v-on:click="updateBattle(2)" v-on:click.left="emitScore2"> {{ currentPlayers.team2 }} </button>
@@ -145,6 +159,7 @@ Vue.component('battle-component', {
     },
 
     // Maybe divvy out different scores for different battles?
+    // Can we consolidate these two functions?
     emitScore1 (event) {
         this.$emit('sendScore1', this.currentGame)
     },
@@ -153,13 +168,14 @@ Vue.component('battle-component', {
     },
 
     updateBattle: function(winningTeam) {
-      this.battlenum = parseInt(this.battlenum) + 1
+      this.battlenum = this.battlenum + 1
       this.currentPlayers.team1 = this.randomChoice(this.team1players).name
       this.currentPlayers.team2 = this.randomChoice(this.team2players).name
       this.currentGame = this.randomChoice(this.games).message
     }
   },
   // Note: this function is not currently used.
+  // Re: Called by Vue when the component is created
   created: function () {
     this.currentPlayers.team1 = this.randomChoice(this.team1players).name
     this.currentPlayers.team2 = this.randomChoice(this.team2players).name
@@ -228,7 +244,7 @@ var app = new Vue({
               <score-board teamnum="1" :name="name1" :players="team1players" :score="score1"></score-board>
               <score-board teamnum="2" :name="name2" :players="team2players" :score="score2"></score-board>
 
-              <battle-component v-if="gameStarted" battlenum="1" :team1players="team1players" :team2players="team2players" v-on:sendScore1="updateScore1" v-on:sendScore2="updateScore2"></battle-component>
+              <battle-component v-if="gameStarted" :team1players="team1players" :team2players="team2players" v-on:sendScore1="updateScore1" v-on:sendScore2="updateScore2"></battle-component>
             </div>
 
       </div>
