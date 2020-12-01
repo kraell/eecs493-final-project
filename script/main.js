@@ -133,8 +133,8 @@ Vue.component('battle-component', {
 
         // TODO: Add points to scoreboard when user clicks winner
         <p> Click the winning player! </p>
-        <button class="button" type="button" v-on:click="updateBattle(1)"> {{ currentPlayers.team1 }} </button>
-        <button class="button" type="button" v-on:click="updateBattle(2)"> {{ currentPlayers.team2 }} </button>
+        <button class="button" type="button" v-on:click="updateBattle(1)" v-on:click.left="emitScore1"> {{ currentPlayers.team1 }} </button>
+        <button class="button" type="button" v-on:click="updateBattle(2)" v-on:click.left="emitScore2"> {{ currentPlayers.team2 }} </button>
 
     </div>
   `,
@@ -144,6 +144,14 @@ Vue.component('battle-component', {
       return items[index]
     },
 
+    // Maybe divvy out different scores for different battles?
+    emitScore1 (event) {
+        this.$emit('sendScore1', this.currentGame)
+    },
+    emitScore2 (event) {
+        this.$emit('sendScore2', this.currentGame)
+    },
+
     updateBattle: function(winningTeam) {
       this.battlenum = parseInt(this.battlenum) + 1
       this.currentPlayers.team1 = this.randomChoice(this.team1players).name
@@ -151,6 +159,7 @@ Vue.component('battle-component', {
       this.currentGame = this.randomChoice(this.games).message
     }
   },
+  // Note: this function is not currently used.
   created: function () {
     this.currentPlayers.team1 = this.randomChoice(this.team1players).name
     this.currentPlayers.team2 = this.randomChoice(this.team2players).name
@@ -176,9 +185,11 @@ var app = new Vue({
     methods: {
         // Triggered when events are emitted by the children.
         name1Sent (name) {
+          console.log(name)
           this.name1 = name
         },
         name2Sent (name) {
+          console.log(name)
           this.name2 = name
         },
         team1InputsSent (players) {
@@ -187,9 +198,17 @@ var app = new Vue({
         team2InputsSent (players) {
           this.team2players = players
         },
-        updateScore(name){
-            //add points to the team that "name" is on
-            // or have it send the corrent team? idk
+        updateScore1 (currentGame) {
+            // Depending on what game was just played, give team1 <X> amount of points.
+            console.log(currentGame);
+            this.score1 += 10;
+            console.log(this.score1);
+        },
+        updateScore2 (currentGame) {
+            // Depending on what game was just played, give team2 <X> amount of points.
+            console.log(currentGame);
+            this.score2 += 10;
+            console.log(this.score2);
         }
     },
     template: `
@@ -209,7 +228,7 @@ var app = new Vue({
               <score-board teamnum="1" :name="name1" :players="team1players" :score="score1"></score-board>
               <score-board teamnum="2" :name="name2" :players="team2players" :score="score2"></score-board>
 
-              <battle-component v-if="gameStarted"  battlenum="1" :team1players="team1players" :team2players="team2players"></battle-component>
+              <battle-component v-if="gameStarted" battlenum="1" :team1players="team1players" :team2players="team2players" v-on:sendScore1="updateScore1" v-on:sendScore2="updateScore2"></battle-component>
             </div>
 
       </div>
