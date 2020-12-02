@@ -62,6 +62,11 @@ input:focus {
   outline: none;
 }
 
+.inputError {
+  clear: both;
+  color: red;
+}
+
 #verticalline {
   border-left: 4px solid black;
   height: 500px;

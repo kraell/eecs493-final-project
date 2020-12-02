@@ -11,9 +11,19 @@
 // TODO: Create components here above the Vue app
 
 Vue.component('team-input', {
-  props: ['teamnum'],
+  props: ['teamnum', 'playerErr', 'nameErr'],
+  watch: { 
+    playerErr: function(newVal) {
+      this.pErr = newVal
+    },
+    nameErr: function(newVal) {
+      this.nErr = newVal
+    }
+  },
   data: function () {
     return {
+      pErr: this.playerErr[this.teamnum],
+      nErr: this.nameErr[this.teamnum],
       name: '',
       players: [
         {
@@ -55,12 +65,16 @@ Vue.component('team-input', {
           <h2 class="teamName mb-5 introHeading">Team {{ teamnum }}</h2>
           <div class="introInputGroup mb-5">
             <h2 class="teamNameTitle introHeading">Name:</h2>
-            <input type="text" v-model="name" v-on:keyup="emitName" class="introInput">
+            <div>
+              <input type="text" v-model="name" v-on:keyup="emitName" class="introInput">
+              <p v-show="nErr" class="inputError"> Please enter in a team name</p>
+            </div>
           </div>
           <div class="introInputGroup">
             <h2 class="playersTitle introHeading">Players:</h2>
             <div class="players">
               <input type="text" v-for="(player, id) in players" v-model="player.name" v-on:keyup="emitPlayers" class="introInput my-1">
+              <p v-show="pErr" class="inputError"> Please enter in at least two player names</p>
             </div>
           </div>
         </div>
@@ -187,6 +201,15 @@ var app = new Vue({
     data: function () {
       return {
         gameStarted: false,
+        errorPlayers: {
+          1: false,
+          2: false
+        },
+        errorTeamName: {
+          1: false,
+          2: false
+        },
+        err: 0,
         names: {
           1: '',
           2: ''
@@ -204,11 +227,13 @@ var app = new Vue({
     methods: {
         // Triggered when events are emitted by the children.
         nameSent (name, team) {
+          this.errorTeamName[team] = false;
           console.log(name)
           this.names[team] = name
         },
         teamInputsSent (playerNames, team) {
-          this.players[team] = playerNames.map(player => player.name)
+          this.errorPlayers[team] = false;
+          this.players[team] = playerNames.map(player => player.name);
         },
 
         updateScore (currentGame, team) {
@@ -217,18 +242,48 @@ var app = new Vue({
             this.scores[team] += 10;
         },
 
+        validateGame() {
+          if (this.players[1].length < 2) {
+            console.log("not enough players");
+            this.errorPlayers[1] = true;
+            console.log(this.errorPlayers);
+          }
+          if (this.players[2].length < 2) {
+            console.log("not enough players");
+            this.errorPlayers[2] = true;
+            console.log(this.errorPlayers);
+          }
+
+          if (this.names[1].length < 2) {
+            console.log("no team name");
+            this.errorTeamName[1] = true;
+            console.log(this.errorPlayers);
+          }
+          
+          if(this.names[2].length < 2) {
+            console.log("no team name");
+            this.errorTeamName[2] = true;
+            console.log(this.errorPlayers);
+          }
+
+          // start the game if there are no errors
+          if (!this.errorPlayers[1] && !this.errorTeamName[1] && !this.errorPlayers[2] && !this.errorTeamName[2]) {
+            this.gameStarted = true;
+          }
+        },
+
     },
     template: `
       <div class="gamescreen">
 
             <div class="teamInputs" v-show="!gameStarted">
-              <team-input teamnum="1" v-on:sendPlayers="teamInputsSent" v-on:sendName="nameSent"></team-input>
+              <team-input teamnum="1" :playerErr="errorPlayers[1]" :nameErr="errorTeamName[1]" v-on:sendPlayers="teamInputsSent" v-on:sendName="nameSent"></team-input>
               <div id="verticalline"></div>
-              <team-input teamnum="2" v-on:sendPlayers="teamInputsSent" v-on:sendName="nameSent"></team-input>
+              <team-input teamnum="2" :playerErr="errorPlayers[2]" :nameErr="errorTeamName[2]" v-on:sendPlayers="teamInputsSent" v-on:sendName="nameSent"></team-input>
             </div>
 
             <div id="playbutton" v-show="!gameStarted">
-              <button class="button" type="button" v-on:click="gameStarted = true"> P L A Y </button>
+              <button class="button" type="button" v-on:click="validateGame"> P L A Y </button>
             </div>
 
             <div v-if="gameStarted">
