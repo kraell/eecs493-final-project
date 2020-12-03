@@ -118,7 +118,7 @@ Vue.component('score-board', {
       } else if (numDrinks >= 5 && numDrinks < 8) {
         level = "drunk"
       } else {
-        level = "please stop playing"
+        level = "please stop playing" // luuuul
       }
       return level
     }
@@ -213,10 +213,6 @@ Vue.component('battle-component', {
 Vue.component('wheel-component', {
   props: ['loser'],
   data: function () {
-    // let randomChoice = function (items) {
-    //   return Math.floor(Math.random() * items.length)
-    // }
-
     return {
       showNextButton: false,
       hideSpinButton: false,
@@ -278,7 +274,7 @@ Vue.component('wheel-component', {
         },
         {
           id: 11,
-          punishment: 'Truth or drink?',
+          punishment: 'Truth or drink?', // haha this one is funny
           angle:20,
         }
       ],
@@ -309,14 +305,19 @@ Vue.component('wheel-component', {
     spinWheel() {
       let wheel = document.getElementById("wheeldiv")
       wheel.classList.add("rotate")
+      let degrees = 10 //Math.floor((Math.random() * 360) + 360)    <- dont know why this doesnt work
+      wheel.style.webkitTransform = "rotate("+ degrees +"deg)"
+      console.log("ROTATE = " + wheel.style.webkitTransform)
+
       setTimeout(function() {
-        wheel.classList.remove("rotate")
+          wheel.classList.remove("rotate")
       }, 1000)
+        
       console.log("spinnning wheel :)")
       this.showNextButton = true
       this.hideSpinButton = true
     },
-
+      
     sendPunishmentData: function() {
       this.$emit('sendPunishmentData', this.currentPunishment, this.loser)
     },
@@ -405,7 +406,7 @@ var app = new Vue({
         updateAlcLevel (punishment, loser) {
           console.log(punishment)
           this.showWheel = false
-
+          //this.players[team][loser].alcConsumed += 1
         },
 
         validateGame() {
@@ -456,7 +457,8 @@ var app = new Vue({
               <score-board teamnum="1" :name="names[1]" :playerObjs="players[1]" :score="scores[1]"></score-board>
               <score-board teamnum="2" :name="names[2]" :playerObjs="players[2]" :score="scores[2]"></score-board>
 
-              <battle-component v-if="gameStarted && !showWheel" :team1players="players[1].map(player => player.name)" :team2players="players[2].map(player => player.name)" v-on:sendScore="updateScore"></battle-component>
+              <battle-component v-if="gameStarted && !showWheel" :team1players="players[1].map(player => player.name)" :team2players="players[2].map(player => player.name)" v-on:sendScore="updateScore" ></battle-component>
+                        
               <wheel-component v-if="gameStarted && showWheel" :loser="loserRound" v-on:sendPunishmentData="updateAlcLevel"></wheel-component>
             </div>
 

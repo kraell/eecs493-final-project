@@ -1,0 +1,3 @@
+Make the wheel spin random degrees (or are we spinning specific degrees to land randomly on a piece?)
+Update alcConsumed for each player (are we basing this off of their punishment or just adding 1 if they lost?)
+
