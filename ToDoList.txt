@@ -1,3 +1,5 @@
-Make the wheel spin random degrees (or are we spinning specific degrees to land randomly on a piece?)
-Update alcConsumed for each player (are we basing this off of their punishment or just adding 1 if they lost?)
-
+Fix the wheel issue: if you make the punishment angles different, it doesn't work
+Figure out the alc content of each punishment
+Update alcConsumed for each player based on the punishment they received
+Update what number battle it is
+Have the game end at some point?

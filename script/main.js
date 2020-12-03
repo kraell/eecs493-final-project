@@ -213,6 +213,9 @@ Vue.component('battle-component', {
 Vue.component('wheel-component', {
   props: ['loser'],
   data: function () {
+    let randomChoice = function (items) {
+        return Math.floor(Math.random() * items.length)
+    }
     return {
       showNextButton: false,
       hideSpinButton: false,
@@ -224,7 +227,7 @@ Vue.component('wheel-component', {
         },
         {
           id: 1,
-          punishment: 'Everyone takes a sip',
+          punishment: 'Everyone takes a sip, but you take 2',
           angle:20,
         },
         {
@@ -234,12 +237,12 @@ Vue.component('wheel-component', {
         },
         {
           id: 3,
-          punishment: 'Waterfall',
+          punishment: 'Waterfall, you are last!',
           angle:20,
         },
         {
           id: 4,
-          punishment: 'Give out 3 sips',
+          punishment: 'Give out 3 sips and you take 3 sips',
           angle:20,
         },
         {
@@ -264,12 +267,12 @@ Vue.component('wheel-component', {
         },
         {
           id: 9,
-          punishment: '5 sips',
+          punishment: 'take 5 sips',
           angle:20,
         },
         {
           id: 10,
-          punishment: '2 sips',
+          punishment: 'take 2 sips',
           angle:20,
         },
         {
@@ -283,6 +286,7 @@ Vue.component('wheel-component', {
         message: 'drink',
         value: 1
       },
+      degrees: 360,
     }
   },
   //<h2 class="mb-4"> {{ loser[team] }} lost! {{ loser[player] }}, spin the punishment wheel! </h2>
@@ -303,10 +307,10 @@ Vue.component('wheel-component', {
   methods: {
 
     spinWheel() {
+      this.setDegree()
       let wheel = document.getElementById("wheeldiv")
       wheel.classList.add("rotate")
-      let degrees = 10 //Math.floor((Math.random() * 360) + 360)    <- dont know why this doesnt work
-      wheel.style.webkitTransform = "rotate("+ degrees +"deg)"
+        wheel.style.webkitTransform = "rotate("+ this.degrees +"deg)"
       console.log("ROTATE = " + wheel.style.webkitTransform)
 
       setTimeout(function() {
@@ -322,9 +326,17 @@ Vue.component('wheel-component', {
       this.$emit('sendPunishmentData', this.currentPunishment, this.loser)
     },
 
-    // randomChoice: function (items) {
-    //   return Math.floor(Math.random() * items.length)
-    // },
+     randomChoice: function (items) {
+       return Math.floor(Math.random() * items.length)
+     },
+      
+      setDegree(){
+          let randomNum = this.randomChoice(this.punishments)
+          let randomDegrees = 360 +  this.punishments[randomNum].angle
+          console.log("punishment = " + this.punishments[randomNum].punishment)
+          console.log("randomDegrees = " + randomDegrees)
+          this.degrees = randomDegrees
+      }
 
     // selectBattle: function() {
     //   this.currentPlayers.team1 = this.randomChoice(this.team1players)
