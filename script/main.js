@@ -209,6 +209,136 @@ Vue.component('battle-component', {
   }
 })
 
+// TODO:wheel component
+Vue.component('wheel-component', {
+  props: ['loser'],
+  data: function () {
+    // let randomChoice = function (items) {
+    //   return Math.floor(Math.random() * items.length)
+    // }
+
+    return {
+      showNextButton: false,
+      hideSpinButton: false,
+      punishments: [
+        {
+          id: 0,
+          punishment: 'Shotgun',
+          angle:20,
+        },
+        {
+          id: 1,
+          punishment: 'Everyone takes a sip',
+          angle:20,
+        },
+        {
+          id: 2,
+          punishment: '1 sip',
+          angle:20,
+        },
+        {
+          id: 3,
+          punishment: 'Waterfall',
+          angle:20,
+        },
+        {
+          id: 4,
+          punishment: 'Give out 3 sips',
+          angle:20,
+        },
+        {
+          id: 5,
+          punishment: '1 sip upside down',
+          angle:20,
+        },
+        {
+          id: 6,
+          punishment: 'SHOT',
+          angle:20,
+        },
+        {
+          id: 7,
+          punishment: 'sip of water',
+          angle:20,
+        },
+        {
+          id: 8,
+          punishment: 'CHUG',
+          angle:20,
+        },
+        {
+          id: 9,
+          punishment: '5 sips',
+          angle:20,
+        },
+        {
+          id: 10,
+          punishment: '2 sips',
+          angle:20,
+        },
+        {
+          id: 11,
+          punishment: 'Truth or drink?',
+          angle:20,
+        }
+      ],
+      currentPunishment: {
+        id: null,
+        message: 'drink',
+        value: 1
+      },
+    }
+  },
+  //<h2 class="mb-4"> {{ loser[team] }} lost! {{ loser[player] }}, spin the punishment wheel! </h2>
+  template: `
+    <div class="battle">
+
+        <h1 class="mb-4"> Punishment Wheel </h1>
+        <div>
+          <div id="wheeldiv">
+            <img src="img/wheel.png" alt="Drinking Punishment Prize Wheel" class="wheelImg">
+          </div>
+          <button  v-if="!hideSpinButton" class="button" type="button" v-on:click="spinWheel()"> Spin </button>
+          <button v-if="showNextButton" class="button" type="button" v-on:click="sendPunishmentData()"> Next Battle </button>
+        </div>
+
+    </div>
+  `,
+  methods: {
+
+    spinWheel() {
+      let wheel = document.getElementById("wheeldiv")
+      wheel.classList.add("rotate")
+      setTimeout(function() {
+        wheel.classList.remove("rotate")
+      }, 1000)
+      console.log("spinnning wheel :)")
+      this.showNextButton = true
+      this.hideSpinButton = true
+    },
+
+    sendPunishmentData: function() {
+      this.$emit('sendPunishmentData', this.currentPunishment, this.loser)
+    },
+
+    // randomChoice: function (items) {
+    //   return Math.floor(Math.random() * items.length)
+    // },
+
+    // selectBattle: function() {
+    //   this.currentPlayers.team1 = this.randomChoice(this.team1players)
+    //   this.currentPlayers.team2 = this.randomChoice(this.team2players)
+    //   this.currentGame = this.randomChoice(this.games)
+    // }
+
+  },
+  // Note: this function is not currently used.
+  // Re: Called by Vue when the component is created
+  created: function () {
+    // this.selectBattle()
+  }
+})
+
 
 // parent component !!
 var app = new Vue({
@@ -216,6 +346,7 @@ var app = new Vue({
     data: function () {
       return {
         gameStarted: false,
+        showWheel: false,
         errorPlayers: {
           1: false,
           2: false
@@ -236,18 +367,19 @@ var app = new Vue({
         scores: {
           1: 0,
           2: 0
-        }
+        },
+        loserRound: null
       }
     },
     methods: {
         // Triggered when events are emitted by the children.
         nameSent (name, team) {
-          this.errorTeamName[team] = false;
+          this.errorTeamName[team] = false
           console.log(name)
           this.names[team] = name
         },
         teamInputsSent (playerNames, team) {
-          this.errorPlayers[team] = false;
+          this.errorPlayers[team] = false
           this.players[team] = playerNames.map(player => {
             return {
               name: player.name,
@@ -264,35 +396,45 @@ var app = new Vue({
             console.log(player)
             this.players[team][player].pointsScored += 10
             console.log(this.players)
+
+            //show the wheel
+            this.showWheel = true
+        },
+
+        // TODO
+        updateAlcLevel (punishment, loser) {
+          console.log(punishment)
+          this.showWheel = false
+
         },
 
         validateGame() {
           if (this.players[1].length < 2) {
-            console.log("not enough players");
-            this.errorPlayers[1] = true;
-            console.log(this.errorPlayers);
+            console.log("not enough players")
+            this.errorPlayers[1] = true
+            console.log(this.errorPlayers)
           }
           if (this.players[2].length < 2) {
-            console.log("not enough players");
-            this.errorPlayers[2] = true;
-            console.log(this.errorPlayers);
+            console.log("not enough players")
+            this.errorPlayers[2] = true
+            console.log(this.errorPlayers)
           }
 
           if (this.names[1].length < 2) {
-            console.log("no team name");
-            this.errorTeamName[1] = true;
-            console.log(this.errorPlayers);
+            console.log("no team name")
+            this.errorTeamName[1] = true
+            console.log(this.errorPlayers)
           }
 
           if(this.names[2].length < 2) {
-            console.log("no team name");
-            this.errorTeamName[2] = true;
-            console.log(this.errorPlayers);
+            console.log("no team name")
+            this.errorTeamName[2] = true
+            console.log(this.errorPlayers)
           }
 
           // start the game if there are no errors
           if (!this.errorPlayers[1] && !this.errorTeamName[1] && !this.errorPlayers[2] && !this.errorTeamName[2]) {
-            this.gameStarted = true;
+            this.gameStarted = true
           }
         },
 
@@ -314,7 +456,8 @@ var app = new Vue({
               <score-board teamnum="1" :name="names[1]" :playerObjs="players[1]" :score="scores[1]"></score-board>
               <score-board teamnum="2" :name="names[2]" :playerObjs="players[2]" :score="scores[2]"></score-board>
 
-              <battle-component v-if="gameStarted" :team1players="players[1].map(player => player.name)" :team2players="players[2].map(player => player.name)" v-on:sendScore="updateScore"></battle-component>
+              <battle-component v-if="gameStarted && !showWheel" :team1players="players[1].map(player => player.name)" :team2players="players[2].map(player => player.name)" v-on:sendScore="updateScore"></battle-component>
+              <wheel-component v-if="gameStarted && showWheel" :loser="loserRound" v-on:sendPunishmentData="updateAlcLevel"></wheel-component>
             </div>
 
       </div>
