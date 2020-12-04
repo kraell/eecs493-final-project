@@ -127,15 +127,107 @@ input:focus {
 }
 
 .wheelImg {
-  width: 500px;
+  width: 600px;
+  z-index: -1000;
 }
+#wheeldiv {
+  padding-top:20px;
+}
+#wheel-buttons{
+  z-index: 1000;
+  position: relative;
+}
+
+#spinButton {
+  left:48%;
+}
+
+#nextButton {
+  left:46.5%;
+}
+
+.wheel-button {
+  z-index: 1000;
+  position: absolute;
+}
+
+#wheelMarker {
+  z-index: 999;
+  border-left: 15px solid black;
+  border-radius: 45%;
+  height: 50px;
+  position: absolute;
+  left: 49.7%;
+  margin-left: -3px;
+  top: 160px;
+}
+
+
 .rotate
 {
   -webkit-transition: -webkit-transform 1s;
   -webkit-transform: rotate(360deg);
 }
-.wheeldiv {
-  transition: all 1s ease;
+
+.rotate0
+{
+  -webkit-transition: -webkit-transform 1s;
+  -webkit-transform: rotate(367.5deg);
+}
+.rotate1
+{
+  -webkit-transition: -webkit-transform 1s;
+  -webkit-transform: rotate(700deg);
+}
+.rotate2
+{
+  -webkit-transition: -webkit-transform 1s;
+  -webkit-transform: rotate(667.5deg);
+}
+.rotate3
+{
+  -webkit-transition: -webkit-transform 1s;
+  -webkit-transform: rotate(640.5deg);
+}
+.rotate4
+{
+  -webkit-transition: -webkit-transform 1s;
+  -webkit-transform: rotate(604.75deg);
+}
+.rotate5
+{
+  -webkit-transition: -webkit-transform 1s;
+  -webkit-transform: rotate(569.25deg);
+}
+.rotate6
+{
+  -webkit-transition: -webkit-transform 1s;
+  -webkit-transform: rotate(547.5deg);
+}
+.rotate7
+{
+  -webkit-transition: -webkit-transform 1s;
+  -webkit-transform: rotate(520.5deg);
+}
+.rotate8
+{
+  -webkit-transition: -webkit-transform 1s;
+  -webkit-transform: rotate(483.5deg);
+}
+.rotate9
+{
+  -webkit-transition: -webkit-transform 1s;
+  -webkit-transform: rotate(460.5deg);
+}
+.rotate10
+{
+  -webkit-transition: -webkit-transform 1s;
+  -webkit-transform: rotate(425deg);
+}
+.rotate11
+{
+  -webkit-transition: -webkit-transform 1s;
+  -webkit-transform: rotate(389.5deg);
 }
 
 #gamescreen {

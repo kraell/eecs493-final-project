@@ -224,69 +224,65 @@ Vue.component('wheel-component', {
         {
           id: 0,
           punishment: 'Shotgun',
-          angle:20,
+          angle: 7.5,
         },
         {
           id: 1,
           punishment: 'Everyone takes a sip',
-          angle:20,
+          angle: 340,
         },
         {
           id: 2,
           punishment: '1 sip',
-          angle:20,
+          angle: 307.5,
         },
         {
           id: 3,
           punishment: 'Waterfall',
-          angle:20,
+          angle: 280.5,
         },
         {
           id: 4,
           punishment: 'Give out 3 sips',
-          angle:20,
+          angle: 244.75,
         },
         {
           id: 5,
           punishment: '1 sip upside down',
-          angle:20,
+          angle: 209.25,
         },
         {
           id: 6,
-          punishment: 'SHOT',
-          angle:20,
+          punishment: 'Shot',
+          angle: 187.5,
         },
         {
           id: 7,
           punishment: 'sip of water',
-          angle:20,
+          angle: 160.5,
         },
         {
           id: 8,
           punishment: 'CHUG',
-          angle:20,
+          angle: 123.5,
         },
         {
           id: 9,
           punishment: '5 sips',
-          angle:20,
+          angle: 100.5,
         },
         {
           id: 10,
           punishment: '2 sips',
-          angle:20,
+          angle: 65,
         },
         {
           id: 11,
           punishment: 'Truth or drink?',
-          angle:20,
+          angle: 29.5,
         }
       ],
-      currentPunishment: {
-        id: null,
-        message: 'drink',
-        value: 1
-      },
+      currentPunishment: null
     }
   },
   //<h2 class="mb-4"> {{ loser[team] }} lost! {{ loser[player] }}, spin the punishment wheel! </h2>
@@ -295,11 +291,23 @@ Vue.component('wheel-component', {
 
         <h1 class="mb-4"> Punishment Wheel </h1>
         <div>
+          
+        <h2 class="mb-4"> You lost! Loser, spin the punishment wheel! </h2>
+
+        <div id="wheel-buttons">
+          <button v-if="!hideSpinButton" id="spinButton" class="wheel-button button" type="button" v-on:click="spinWheel()"> Spin </button>
+          <button v-if="showNextButton" id="nextButton" class="wheel-button button" type="button" v-on:click="sendPunishmentData()"> Next Battle </button>
+        </div>
+        <div id="wheelMarker">
+        </div>
+
+          
           <div id="wheeldiv">
-            <img src="img/wheel.png" alt="Drinking Punishment Prize Wheel" class="wheelImg">
+            <img id="wheel" src="img/wheel.png" alt="Drinking Punishment Prize Wheel" class="wheelImg">
           </div>
-          <button  v-if="!hideSpinButton" class="button" type="button" v-on:click="spinWheel()"> Spin </button>
-          <button v-if="showNextButton" class="button" type="button" v-on:click="sendPunishmentData()"> Next Battle </button>
+
+          
+          
         </div>
 
     </div>
@@ -307,29 +315,38 @@ Vue.component('wheel-component', {
   methods: {
 
     spinWheel() {
-      let wheel = document.getElementById("wheeldiv")
-      wheel.classList.add("rotate")
-      setTimeout(function() {
-        wheel.classList.remove("rotate")
-      }, 1000)
+      this.selectPunishment()
+      let wheel = document.getElementById("wheel")
+      
+      let id = this.currentPunishment.id
+      console.log(id)
+      wheel.classList.add("rotate" + id)
       console.log("spinnning wheel :)")
+      let p = this.currentPunishment.punishment
+      setTimeout (function() {
+        alert("Your Punishment is: " + p)
+      }, 1000)
       this.showNextButton = true
       this.hideSpinButton = true
     },
 
+    randomChoice: function (items) {
+      return Math.floor(Math.random() * items.length)
+    },
+
     sendPunishmentData: function() {
+      let id = this.currentPunishment.id
+      let wheel = document.getElementById("wheeldiv")
+      wheel.classList.remove("rotate" + id)
       this.$emit('sendPunishmentData', this.currentPunishment, this.loser)
     },
 
-    // randomChoice: function (items) {
-    //   return Math.floor(Math.random() * items.length)
-    // },
-
-    // selectBattle: function() {
-    //   this.currentPlayers.team1 = this.randomChoice(this.team1players)
-    //   this.currentPlayers.team2 = this.randomChoice(this.team2players)
-    //   this.currentGame = this.randomChoice(this.games)
-    // }
+    selectPunishment: function() {
+      this.currentPunishment = this.punishments[this.randomChoice(this.punishments)]
+      console.log("curPunishment: ")
+      console.log(this.currentPunishment)
+     
+    }
 
   },
   // Note: this function is not currently used.
