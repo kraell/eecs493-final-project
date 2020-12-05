@@ -127,7 +127,7 @@ Vue.component('score-board', {
 
 // TODO
 Vue.component('battle-component', {
-  props: ['team1players', 'team2players'],
+  props: ['team1players', 'team2players', 'round'],
   data: function () {
     let randomChoice = function (items) {
       return Math.floor(Math.random() * items.length)
@@ -169,25 +169,31 @@ Vue.component('battle-component', {
     }
   },
   template: `
-    <div :id="'battle' + battlenum" class="battle">
+    <div :id="'battle' + round" class="battle">
 
-        <h1 class="mb-4"> Battle {{ battlenum }} </h1>
+        <h1 class="mb-4"> Battle {{ round }} </h1>
 
         <h2 class="mb-4"> {{ team1players[currentPlayers.team1] }} vs. {{ team2players[currentPlayers.team2] }} </h2>
 
         <h2 class="mb-4"> {{ games[currentGame].message }} </h2>
 
         <p> Click the winning player! </p>
-        <button class="button" type="button" v-on:click="updateBattle(1, currentPlayers.team1)"> {{ team1players[currentPlayers.team1] }} </button>
-        <button class="button" type="button" v-on:click="updateBattle(2, currentPlayers.team2)"> {{ team2players[currentPlayers.team2] }} </button>
+        <button class="button" type="button" v-on:click="updateBattle(1, currentPlayers.team1, currentPlayers.team2)"> {{ team1players[currentPlayers.team1] }} </button>
+        <button class="button" type="button" v-on:click="updateBattle(2, currentPlayers.team2, currentPlayers.team2)"> {{ team2players[currentPlayers.team2] }} </button>
 
     </div>
   `,
   methods: {
 
-    updateBattle: function(winningTeam, player) {
-      this.$emit('sendScore', this.currentGame, winningTeam, player)
-      this.battlenum = this.battlenum + 1
+    updateBattle: function(winningTeam, playerW, playerL) {
+      console.log("updateBattle")
+      console.log(playerW)
+      console.log(playerL)
+      console.log("end updateBattle")
+      let loserTeam = winningTeam === 1? 2:1
+      let loser = {"player": playerL, "team": loserTeam}
+      this.$emit('sendScore', this.currentGame, winningTeam, playerW, loser, this.round)
+      //this.battlenum = this.battlenum + 1
       this.selectBattle()
     },
 
@@ -213,72 +219,93 @@ Vue.component('battle-component', {
 Vue.component('wheel-component', {
   props: ['loser'],
   data: function () {
-    let randomChoice = function (items) {
-        return Math.floor(Math.random() * items.length)
-    }
     return {
       showNextButton: false,
       hideSpinButton: false,
       punishments: [
         {
           id: 0,
-          punishment: 'Shotgun',
+          punishment: 'shotgun!',
           angle: 7.5,
+          alcLevel: 1.0,
+          teamLevel: 0,
         },
         {
           id: 1,
-          punishment: 'Everyone takes a sip, but you take 2',
+          punishment: 'everyone takes a sip, but you take 2!',
           angle:340,
+          alcLevel: .2,
+          teamLevel: .1,
         },
         {
           id: 2,
           punishment: 'take 1 sip',
           angle: 307.5,
+          alcLevel: .1,
+          teamLevel: 0,
         },
         {
           id: 3,
-          punishment: 'Waterfall, you are last!',
+          punishment: 'waterfall, you are last!',
           angle:280.5,
+          alcLevel: .6,
+          teamLevel: .4,
         },
         {
           id: 4,
-          punishment: 'Give out 3 sips and you take 3 sips',
+          punishment: 'give out 3 sips and take 3 sips',
           angle:244.75,
+          alcLevel: .3,
+          teamLevel: .1,
         },
         {
           id: 5,
-          punishment: '1 sip upside down',
+          punishment: 'take 1 sip upside down',
           angle: 209.25,
+          alcLevel: .1,
+          teamLevel: 0,
         },
         {
           id: 6,
-          punishment: 'Shot',
+          punishment: 'take a shot!',
           angle: 187.5,
+          alcLevel: 1.0,
+          teamLevel: 0,
         },
         {
           id: 7,
-          punishment: 'sip of water',
+          punishment: 'take a sip of water',
           angle: 160.5,
+          alcLevel: 0,
+          teamLevel: 0,
         },
         {
           id: 8,
-          punishment: 'CHUG',
+          punishment: 'CHUG!',
           angle: 123.5,
+          alcLevel: .5,
+          teamLevel: 0,
         },
         {
           id: 9,
           punishment: 'take 5 sips',
           angle:100.5,
+          alcLevel: .5,
+          teamLevel: 0,
         },
         {
           id: 10,
           punishment: 'take 2 sips',
           angle:65,
+          alcLevel: .2,
+          teamLevel: 0,
         },
         {
           id: 11,
-          punishment: 'Truth or drink?', // haha this one is funny
+          punishment: 'truth or drink?', // haha this one is funny
           angle:29.5,
+          alcLevel: .1,
+          teamLevel: 0,
         }
       ],
       currentPunishment: null
@@ -291,7 +318,7 @@ Vue.component('wheel-component', {
         <h1 class="mb-4"> Punishment Wheel </h1>
         <div>
           
-        <h2 class="mb-4"> You lost! Loser, spin the punishment wheel! </h2>
+        <h2 id="changeText" class="mb-4"> Team {{ loser.teamName }} lost! {{ loser.player.name }}, spin the punishment wheel! </h2>
 
         <div id="wheel-buttons">
           <button v-if="!hideSpinButton" id="spinButton" class="wheel-button button" type="button" v-on:click="spinWheel()"> Spin </button>
@@ -322,8 +349,11 @@ Vue.component('wheel-component', {
       wheel.classList.add("rotate" + id)
       console.log("spinnning wheel :)")
       let p = this.currentPunishment.punishment
+      let loserName = this.loser.player.name
+      let headerText = document.getElementById("changeText")
       setTimeout (function() {
-        alert("Your Punishment is: " + p)
+        headerText.innerHTML =  loserName + ', ' + p
+        headerText.style.fontWeight = "bold"
       }, 1000)
       this.showNextButton = true
       this.hideSpinButton = true
@@ -337,7 +367,7 @@ Vue.component('wheel-component', {
       let id = this.currentPunishment.id
       let wheel = document.getElementById("wheeldiv")
       wheel.classList.remove("rotate" + id)
-      this.$emit('sendPunishmentData', this.currentPunishment, this.loser)
+      this.$emit('sendPunishmentData', this.currentPunishment)
     },
 
     selectPunishment: function() {
@@ -384,7 +414,15 @@ var app = new Vue({
           1: 0,
           2: 0
         },
-        loserRound: null
+        loserRound: {
+          player: null,
+          team: null,
+          playerIndex: null,
+          teamName: ""
+        },
+        curRound: 1,
+        winner: "",
+        showWinner: false
       }
     },
     methods: {
@@ -405,23 +443,52 @@ var app = new Vue({
           });
         },
 
-        updateScore (currentGame, team, player) {
+        updateScore (currentGame, team, playerW, playerL, round) {
             // Depending on what game was just played, give team <X> amount of points.
             console.log(currentGame);
             this.scores[team] += 10;
-            console.log(player)
-            this.players[team][player].pointsScored += 10
+            console.log(playerW)
+            this.players[team][playerW].pointsScored += 10
             console.log(this.players)
+
+            this.loserRound.player = this.players[playerL.team][playerL.player]
+            this.loserRound.playerIndex = playerL.player
+            this.loserRound.team = playerL.team
+            this.loserRound.teamName = this.names[playerL.team]
+            this.curRound = round + 1
 
             //show the wheel
             this.showWheel = true
         },
 
         // TODO
-        updateAlcLevel (punishment, loser) {
+        updateAlcLevel (punishment) {
+          console.log("updateAlcLevel")
           console.log(punishment)
+          let player = this.players[this.loserRound.team][this.loserRound.playerIndex]
+          console.log(player.name)
+          this.players[this.loserRound.team].forEach(player => {
+            if (player.name === this.loserRound.player.name) {
+              player.alcConsumed += punishment.alcLevel
+            }
+            else{
+              player.alcConsumed += punishment.teamLevel
+            }
+          })
+          console.log(player.alcConsumed)
+
           this.showWheel = false
-          //this.players[team][loser].alcConsumed += 1
+
+          //check scores
+          if( this.scores[1] >= 20) {
+            this.winner = this.names[1]
+            this.showWinner = true
+          }
+          if( this.scores[2] >= 20) {
+            this.winner = this.names[1]
+            this.showWinner = true
+          }
+        
         },
 
         validateGame() {
@@ -436,13 +503,13 @@ var app = new Vue({
             console.log(this.errorPlayers)
           }
 
-          if (this.names[1].length < 2) {
+          if (this.names[1].length < 1) {
             console.log("no team name")
             this.errorTeamName[1] = true
             console.log(this.errorPlayers)
           }
 
-          if(this.names[2].length < 2) {
+          if(this.names[2].length < 1) {
             console.log("no team name")
             this.errorTeamName[2] = true
             console.log(this.errorPlayers)
@@ -472,9 +539,16 @@ var app = new Vue({
               <score-board teamnum="1" :name="names[1]" :playerObjs="players[1]" :score="scores[1]"></score-board>
               <score-board teamnum="2" :name="names[2]" :playerObjs="players[2]" :score="scores[2]"></score-board>
 
-              <battle-component v-if="gameStarted && !showWheel" :team1players="players[1].map(player => player.name)" :team2players="players[2].map(player => player.name)" v-on:sendScore="updateScore" ></battle-component>
+              <battle-component v-if="gameStarted && !showWheel && !showWinner" :team1players="players[1].map(player => player.name)" :team2players="players[2].map(player => player.name)" :round="curRound" v-on:sendScore="updateScore" ></battle-component>
                         
-              <wheel-component v-if="gameStarted && showWheel" :loser="loserRound" v-on:sendPunishmentData="updateAlcLevel"></wheel-component>
+              <wheel-component v-if="gameStarted && showWheel && !showWinner" :loser="loserRound" v-on:sendPunishmentData="updateAlcLevel"></wheel-component>
+              
+              <div class="winnerDiv" v-if="showWinner">
+                <h2 class="winner">TEAM {{this.winner}} WINS!</h2>
+                <button id="playAgainButton" class="button" type="button" v-on:click="gameStarted=false"> Play Again? </button>
+
+              </div>
+              
             </div>
 
       </div>

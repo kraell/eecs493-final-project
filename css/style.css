@@ -126,6 +126,20 @@ input:focus {
     width: 100%;
 }
 
+.winnerDiv {
+  position: fixed;
+  top: 25%;
+  left: 0;
+  text-align: center;
+  width: 100%;
+}
+
+.winner {
+  font-size:48px;
+  font-weight: bolder;
+  text-align: center;
+}
+
 .wheelImg {
   width: 600px;
   z-index: -1000;
