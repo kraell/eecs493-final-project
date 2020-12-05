@@ -401,7 +401,6 @@ var app = new Vue({
           1: false,
           2: false
         },
-        err: 0,
         names: {
           1: '',
           2: ''
@@ -521,6 +520,19 @@ var app = new Vue({
           }
         },
 
+        playAgain() {
+          this.gameStarted=false
+          this.curRound = 1
+          this.scores[1] = 0
+          this.scores[2] = 0
+          this.players[1] = []
+          this.players[2] = []
+          this.names[1] = ""
+          this.names[2] = ""
+          this.showWheel = false
+          this.showWinner = false
+        }
+
     },
     template: `
       <div class="gamescreen">
@@ -545,7 +557,7 @@ var app = new Vue({
               
               <div class="winnerDiv" v-if="showWinner">
                 <h2 class="winner">TEAM {{this.winner}} WINS!</h2>
-                <button id="playAgainButton" class="button" type="button" v-on:click="gameStarted=false"> Play Again? </button>
+                <button id="playAgainButton" class="button" type="button" v-on:click="playAgain"> Play Again? </button>
 
               </div>
               
