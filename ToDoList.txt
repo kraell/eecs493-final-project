@@ -1,0 +1,6 @@
+Fix the wheel issue: if you make the punishment angles different, it doesn't work
+Figure out the actual angles of each punishment on the wheel
+Figure out the alc content of each punishment
+Update alcConsumed for each player based on the punishment they received
+Update what number battle it is
+Have the game end at some point?

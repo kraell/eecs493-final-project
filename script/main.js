@@ -118,7 +118,7 @@ Vue.component('score-board', {
       } else if (numDrinks >= 5 && numDrinks < 8) {
         level = "drunk"
       } else {
-        level = "please stop playing"
+        level = "please stop playing" // luuuul
       }
       return level
     }
@@ -213,10 +213,9 @@ Vue.component('battle-component', {
 Vue.component('wheel-component', {
   props: ['loser'],
   data: function () {
-    // let randomChoice = function (items) {
-    //   return Math.floor(Math.random() * items.length)
-    // }
-
+    let randomChoice = function (items) {
+        return Math.floor(Math.random() * items.length)
+    }
     return {
       showNextButton: false,
       hideSpinButton: false,
@@ -228,23 +227,23 @@ Vue.component('wheel-component', {
         },
         {
           id: 1,
-          punishment: 'Everyone takes a sip',
-          angle: 340,
+          punishment: 'Everyone takes a sip, but you take 2',
+          angle:340,
         },
         {
           id: 2,
-          punishment: '1 sip',
+          punishment: 'take 1 sip',
           angle: 307.5,
         },
         {
           id: 3,
-          punishment: 'Waterfall',
-          angle: 280.5,
+          punishment: 'Waterfall, you are last!',
+          angle:280.5,
         },
         {
           id: 4,
-          punishment: 'Give out 3 sips',
-          angle: 244.75,
+          punishment: 'Give out 3 sips and you take 3 sips',
+          angle:244.75,
         },
         {
           id: 5,
@@ -268,18 +267,18 @@ Vue.component('wheel-component', {
         },
         {
           id: 9,
-          punishment: '5 sips',
-          angle: 100.5,
+          punishment: 'take 5 sips',
+          angle:100.5,
         },
         {
           id: 10,
-          punishment: '2 sips',
-          angle: 65,
+          punishment: 'take 2 sips',
+          angle:65,
         },
         {
           id: 11,
-          punishment: 'Truth or drink?',
-          angle: 29.5,
+          punishment: 'Truth or drink?', // haha this one is funny
+          angle:29.5,
         }
       ],
       currentPunishment: null
@@ -422,7 +421,7 @@ var app = new Vue({
         updateAlcLevel (punishment, loser) {
           console.log(punishment)
           this.showWheel = false
-
+          //this.players[team][loser].alcConsumed += 1
         },
 
         validateGame() {
@@ -473,7 +472,8 @@ var app = new Vue({
               <score-board teamnum="1" :name="names[1]" :playerObjs="players[1]" :score="scores[1]"></score-board>
               <score-board teamnum="2" :name="names[2]" :playerObjs="players[2]" :score="scores[2]"></score-board>
 
-              <battle-component v-if="gameStarted && !showWheel" :team1players="players[1].map(player => player.name)" :team2players="players[2].map(player => player.name)" v-on:sendScore="updateScore"></battle-component>
+              <battle-component v-if="gameStarted && !showWheel" :team1players="players[1].map(player => player.name)" :team2players="players[2].map(player => player.name)" v-on:sendScore="updateScore" ></battle-component>
+                        
               <wheel-component v-if="gameStarted && showWheel" :loser="loserRound" v-on:sendPunishmentData="updateAlcLevel"></wheel-component>
             </div>
 
