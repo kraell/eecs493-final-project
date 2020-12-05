@@ -523,12 +523,12 @@ var app = new Vue({
         playAgain() {
           this.gameStarted=false
           this.curRound = 1
-          this.scores[1] = 0
-          this.scores[2] = 0
-          this.players[1] = []
-          this.players[2] = []
-          this.names[1] = ""
-          this.names[2] = ""
+          this.scores[1] = this.scores[1]
+          this.scores[2] = this.scores[2]
+          this.players[1] = this.players[1]
+          this.players[2] = this.players[2]
+          this.names[1] = this.names[1]
+          this.names[2] = this.names[2]
           this.showWheel = false
           this.showWinner = false
         }
