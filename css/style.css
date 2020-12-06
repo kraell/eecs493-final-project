@@ -10,9 +10,6 @@
 
 
 #gameTitle {
-    position: fixed;
-    top: 0;
-    left: 0;
     font-size: 70px;
     text-align: center;
     vertical-align: center;
@@ -67,15 +64,6 @@ input:focus {
   color: red;
 }
 
-#verticalline {
-  border-left: 4px solid black;
-  height: 500px;
-  position: absolute;
-  left: 50%;
-  margin-left: -3px;
-  top: 50px;
-}
-
 #playbutton {
     text-align: center;
     font-size: 50px;
@@ -92,45 +80,42 @@ input:focus {
 }
 
 .teamInputs {
-  height: 600px;
+  height: 500px;
 }
 
 .teamDetails {
   width: 700px;
   padding: 60px;
   display: block;
-  position: fixed;
-  top: 100px;
+  position: relative;
 }
 
 .scoreboard {
-    position: fixed;
-    top: 100px;
+    position: relative;
     width: 300px;
     border-left-style: solid;
     border-right-style: solid;
     border-bottom-style: solid;
 }
 
-#scoreboard1, #inputs1 {
+#inputs1 {
     left:0;
 }
 
-#scoreboard2, #inputs2 {
+#inputs2 {
     right:0;
 }
 
 .battle {
-    position: fixed;
-    top: 150px;
-    left: 0;
+    position: relative;
+    top: 50px;
     text-align: center;
     width: 100%;
 }
 
 .winnerDiv {
-  position: fixed;
-  top: 25%;
+  position: relative;
+  top: 50px;
   left: 0;
   text-align: center;
   width: 100%;
@@ -145,26 +130,26 @@ input:focus {
 .wheelImg {
   width: 600px;
   z-index: -1000;
+  position: relative;
+  top: -60px;
 }
 #wheeldiv {
   padding-top:20px;
 }
 #wheel-buttons{
   z-index: 1000;
-  position: relative;
-}
-
-#spinButton {
-  left:48%;
-}
-
-#nextButton {
-  left:46.5%;
+  display: flex;
+  justify-content: center;
 }
 
 .wheel-button {
   z-index: 1000;
-  position: absolute;
+  position: relative;
+}
+
+#wheelMarkerDiv {
+  display: flex;
+  justify-content: center;
 }
 
 #wheelMarker {
@@ -172,10 +157,8 @@ input:focus {
   border-left: 15px solid black;
   border-radius: 45%;
   height: 50px;
-  position: absolute;
-  left: 49.7%;
-  margin-left: -3px;
-  top: 160px;
+  width: 10px;
+  position: relative;
 }
 
 
@@ -248,7 +231,7 @@ input:focus {
 
 #gamescreen {
     width: 100%;
-    height: 100%;
+    height: 1000px;
     background-color: #eee;
     display: flex;
     justify-content: center;
@@ -276,4 +259,12 @@ input:focus {
     right: 0;
     margin: auto;
     z-index: -100;
+}
+
+#team1 {
+  border-right: 2px solid black;
+}
+
+#team2 {
+  border-left: 2px solid black;
 }

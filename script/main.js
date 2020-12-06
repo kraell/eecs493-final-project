@@ -127,7 +127,7 @@ Vue.component('score-board', {
 
 // TODO
 Vue.component('battle-component', {
-  props: ['team1players', 'team2players', 'round'],
+  props: ['team1players', 'team2players', 'round', 'battle'],
   data: function () {
     let randomChoice = function (items) {
       return Math.floor(Math.random() * items.length)
@@ -158,6 +158,10 @@ Vue.component('battle-component', {
         {
           id: 5,
           message: 'STARING CONTEST'
+        },
+        {
+          id: 6,
+          message: 'SLAPS'
         }
       ],
       currentPlayers: {
@@ -171,7 +175,7 @@ Vue.component('battle-component', {
   template: `
     <div :id="'battle' + round" class="battle">
 
-        <h1 class="mb-4"> Battle {{ round }} </h1>
+        <h1 class="mb-4"> Round {{ round }}, Battle {{ battle }} </h1>
 
         <h2 class="mb-4"> {{ team1players[currentPlayers.team1] }} vs. {{ team2players[currentPlayers.team2] }} </h2>
 
@@ -192,7 +196,7 @@ Vue.component('battle-component', {
       console.log("end updateBattle")
       let loserTeam = winningTeam === 1? 2:1
       let loser = {"player": playerL, "team": loserTeam}
-      this.$emit('sendScore', this.currentGame, winningTeam, playerW, loser, this.round)
+      this.$emit('sendScore', this.currentGame, winningTeam, playerW, loser)
       //this.battlenum = this.battlenum + 1
       this.selectBattle()
     },
@@ -317,23 +321,24 @@ Vue.component('wheel-component', {
 
         <h1 class="mb-4"> Punishment Wheel </h1>
         <div>
-          
-        <h2 id="changeText" class="mb-4"> Team {{ loser.teamName }} lost! {{ loser.player.name }}, spin the punishment wheel! </h2>
 
-        <div id="wheel-buttons">
-          <button v-if="!hideSpinButton" id="spinButton" class="wheel-button button" type="button" v-on:click="spinWheel()"> Spin </button>
-          <button v-if="showNextButton" id="nextButton" class="wheel-button button" type="button" v-on:click="sendPunishmentData()"> Next Battle </button>
-        </div>
-        <div id="wheelMarker">
-        </div>
+          <h2 id="changeText" class="mb-4"> Team {{ loser.teamName }} lost! {{ loser.player.name }}, spin the punishment wheel! </h2>
 
-          
+          <div id="wheel-buttons" class="mb-4">
+            <button v-if="!hideSpinButton" id="spinButton" class="wheel-button button" type="button" v-on:click="spinWheel()"> Spin </button>
+            <button v-if="showNextButton" id="nextButton" class="wheel-button button" type="button" v-on:click="sendPunishmentData()"> Next Battle </button>
+          </div>
+          <div id="wheelMarkerDiv">
+            <div id="wheelMarker"></div>
+          </div>
+
+
           <div id="wheeldiv">
             <img id="wheel" src="img/wheel.png" alt="Drinking Punishment Prize Wheel" class="wheelImg">
           </div>
 
-          
-          
+
+
         </div>
 
     </div>
@@ -343,7 +348,7 @@ Vue.component('wheel-component', {
     spinWheel() {
       this.selectPunishment()
       let wheel = document.getElementById("wheel")
-      
+
       let id = this.currentPunishment.id
       console.log(id)
       wheel.classList.add("rotate" + id)
@@ -374,15 +379,11 @@ Vue.component('wheel-component', {
       this.currentPunishment = this.punishments[this.randomChoice(this.punishments)]
       console.log("curPunishment: ")
       console.log(this.currentPunishment)
-     
+
     }
 
   },
-  // Note: this function is not currently used.
-  // Re: Called by Vue when the component is created
-  created: function () {
-    // this.selectBattle()
-  }
+
 })
 
 
@@ -419,6 +420,7 @@ var app = new Vue({
           playerIndex: null,
           teamName: ""
         },
+        curBattle: 1,
         curRound: 1,
         winner: "",
         showWinner: false
@@ -442,19 +444,18 @@ var app = new Vue({
           });
         },
 
-        updateScore (currentGame, team, playerW, playerL, round) {
+        updateScore (currentGame, team, playerW, playerL) {
             // Depending on what game was just played, give team <X> amount of points.
             console.log(currentGame);
-            this.scores[team] += 10;
+            this.scores[team] += 10 * this.curRound;
             console.log(playerW)
-            this.players[team][playerW].pointsScored += 10
+            this.players[team][playerW].pointsScored += 10 * this.curRound
             console.log(this.players)
 
             this.loserRound.player = this.players[playerL.team][playerL.player]
             this.loserRound.playerIndex = playerL.player
             this.loserRound.team = playerL.team
             this.loserRound.teamName = this.names[playerL.team]
-            this.curRound = round + 1
 
             //show the wheel
             this.showWheel = true
@@ -478,16 +479,24 @@ var app = new Vue({
 
           this.showWheel = false
 
-          //check scores
-          if( this.scores[1] >= 20) {
-            this.winner = this.names[1]
+          this.curBattle += 1
+
+          if (this.curBattle > 10) {
+            this.curRound += 1
+            this.curBattle = 1
+          }
+
+          if (this.curRound > 3) {
+            if (this.scores[1] > this.scores[2]) {
+              this.winner = `TEAM ${this.names[1]} WINS!`
+            } else if (this.scores[2] > this.scores[1]) {
+              this.winner = `TEAM ${this.names[2]} WINS!`
+            } else {
+              this.winner = `IT'S A TIE!`
+            }
             this.showWinner = true
           }
-          if( this.scores[2] >= 20) {
-            this.winner = this.names[1]
-            this.showWinner = true
-          }
-        
+
         },
 
         validateGame() {
@@ -522,45 +531,54 @@ var app = new Vue({
 
         playAgain() {
           this.gameStarted=false
-          this.curRound = 1
-          this.scores[1] = this.scores[1]
-          this.scores[2] = this.scores[2]
-          this.players[1] = this.players[1]
-          this.players[2] = this.players[2]
-          this.names[1] = this.names[1]
-          this.names[2] = this.names[2]
+          this.curBattle = 1
+
+          this.scores = {
+            1: 0,
+            2: 0
+          }
+
+          this.players = this.players.map(player => {
+            return {
+              name: player.name,
+              pointsScored: 0,
+              alcConsumed: player.alcConsumed,
+            }
+          })
+
           this.showWheel = false
           this.showWinner = false
         }
 
     },
     template: `
-      <div class="gamescreen">
+      <div class="gamescreen container-fluid">
 
-            <div class="teamInputs" v-show="!gameStarted">
-              <team-input teamnum="1" :playerErr="errorPlayers[1]" :nameErr="errorTeamName[1]" v-on:sendPlayers="teamInputsSent" v-on:sendName="nameSent"></team-input>
-              <div id="verticalline"></div>
-              <team-input teamnum="2" :playerErr="errorPlayers[2]" :nameErr="errorTeamName[2]" v-on:sendPlayers="teamInputsSent" v-on:sendName="nameSent"></team-input>
+            <div class="teamInputs row" v-show="!gameStarted">
+              <team-input teamnum="1" :playerErr="errorPlayers[1]" :nameErr="errorTeamName[1]" v-on:sendPlayers="teamInputsSent" v-on:sendName="nameSent" class="col-md-6"></team-input>
+              <team-input teamnum="2" :playerErr="errorPlayers[2]" :nameErr="errorTeamName[2]" v-on:sendPlayers="teamInputsSent" v-on:sendName="nameSent" class="col-md-6"></team-input>
             </div>
 
-            <div id="playbutton" v-show="!gameStarted">
+            <div id="playbutton" v-show="!gameStarted" class="mt-5">
               <button class="button" type="button" v-on:click="validateGame"> P L A Y </button>
             </div>
 
-            <div v-if="gameStarted">
-              <score-board teamnum="1" :name="names[1]" :playerObjs="players[1]" :score="scores[1]"></score-board>
-              <score-board teamnum="2" :name="names[2]" :playerObjs="players[2]" :score="scores[2]"></score-board>
+            <div v-if="gameStarted" class="row">
+              <score-board teamnum="1" :name="names[1]" :playerObjs="players[1]" :score="scores[1]" class="col-md-3"></score-board>
 
-              <battle-component v-if="gameStarted && !showWheel && !showWinner" :team1players="players[1].map(player => player.name)" :team2players="players[2].map(player => player.name)" :round="curRound" v-on:sendScore="updateScore" ></battle-component>
-                        
-              <wheel-component v-if="gameStarted && showWheel && !showWinner" :loser="loserRound" v-on:sendPunishmentData="updateAlcLevel"></wheel-component>
-              
-              <div class="winnerDiv" v-if="showWinner">
-                <h2 class="winner">TEAM {{this.winner}} WINS!</h2>
+
+              <battle-component v-if="gameStarted && !showWheel && !showWinner" :team1players="players[1].map(player => player.name)" :team2players="players[2].map(player => player.name)" :round="curRound" :battle="curBattle" v-on:sendScore="updateScore" class="col-md-6"></battle-component>
+
+              <wheel-component v-if="gameStarted && showWheel && !showWinner" :loser="loserRound" v-on:sendPunishmentData="updateAlcLevel" class="col-md-6"></wheel-component>
+
+              <div class="winnerDiv col-md-6" v-if="showWinner">
+                <h2 class="winner">{{this.winner}}</h2>
                 <button id="playAgainButton" class="button" type="button" v-on:click="playAgain"> Play Again? </button>
 
               </div>
-              
+
+              <score-board teamnum="2" :name="names[2]" :playerObjs="players[2]" :score="scores[2]" class="col-md-3"></score-board>
+
             </div>
 
       </div>
