@@ -529,27 +529,6 @@ var app = new Vue({
           }
         },
 
-        playAgain() {
-          this.gameStarted=false
-          this.curBattle = 1
-
-          this.scores = {
-            1: 0,
-            2: 0
-          }
-
-          this.players = this.players.map(player => {
-            return {
-              name: player.name,
-              pointsScored: 0,
-              alcConsumed: player.alcConsumed,
-            }
-          })
-
-          this.showWheel = false
-          this.showWinner = false
-        }
-
     },
     template: `
       <div class="gamescreen container-fluid">
@@ -573,7 +552,6 @@ var app = new Vue({
 
               <div class="winnerDiv col-md-6" v-if="showWinner">
                 <h2 class="winner">{{this.winner}}</h2>
-                <button id="playAgainButton" class="button" type="button" v-on:click="playAgain"> Play Again? </button>
 
               </div>
 
